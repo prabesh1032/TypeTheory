@@ -6,11 +6,12 @@ export default function Navlinks() {
 
   const links = [
     { name: "Home", href: "/" },
-    { name: "Categories", href: "#" },
+    { name: "Categories", href: "/category" },
     { name: "Blog", href: "/blog" },
-    { name: "Styles", href: "/styles" },
+    { name: "My Contain", href: "/mycontains" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
+    { name: "Login", href: "/login" },
   ];
 
   const categories = [
@@ -48,7 +49,7 @@ export default function Navlinks() {
               </button>
 
               {showDropdown && (
-                <div className="absolute top-8 left-0 bg-white shadow-lg rounded-md py-3 w-40">
+                <div className="absolute top-8 left-0 z-12 bg-white shadow-lg rounded-md py-3 w-40">
                   {categories.map((category) => (
                     <div
                       key={category}
