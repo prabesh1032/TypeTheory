@@ -11,6 +11,7 @@ import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './routes/ProtectedRoute'
+import PublicRoute from './routes/PublicRoute'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -28,9 +29,11 @@ function App() {
             <Route path="blog" element={<Blogs />} />
           </Route>
 
-          {/* Auth Routes (without MasterLayout if needed) */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          {/* Auth Routes */}
+          <Route element={<PublicRoute />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
