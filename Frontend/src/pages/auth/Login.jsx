@@ -1,12 +1,17 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import AuthService from '../../services/authService';
+import useStateContext from '../../context/useStateContext';
 
 export default function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     mode: "onBlur",
   });
+
+  const navigate = useNavigate();
+  const { setUser, setToken } = useStateContext();
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [serverError, setServerError] = React.useState("");
@@ -14,9 +19,12 @@ export default function Login() {
   const submitForm = async (data) => {
     try {
       setServerError("");
-      console.log(data);
+      const res = await AuthService.login(data);
+      setUser(res.user);
+      setToken(res.token);
+      navigate("/");
     } catch (err) {
-      setServerError("Invalid email or password");
+      setServerError(err.response?.data?.message || "Invalid email or password");
     }
   };
 

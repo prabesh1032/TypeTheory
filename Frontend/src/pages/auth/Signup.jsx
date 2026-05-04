@@ -1,8 +1,12 @@
+/* eslint-disable no-unused-vars */
 import React from 'react'
 import { useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z} from 'zod';
 import { Eye, EyeOff } from 'lucide-react';
+import AuthService from '../../services/authService';
+import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
 
  const formSchema = z
   .object({
@@ -40,10 +44,31 @@ export default function Register() {
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const navigate = useNavigate();
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const submitForm = (data) => {
-    console.log(data);
-  };
+ const submitForm = async (data) => {
+  try {
+    setLoading(true);
+    setServerError("");
+
+    const res = await AuthService.signup(data);
+
+    console.log(res);
+
+    navigate("/login");
+
+  } catch (err) {
+    if (err.response?.data?.message) {
+      setServerError(err.response.data.message);
+    } else {
+      setServerError("Something went wrong");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600">
