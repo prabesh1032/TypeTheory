@@ -1,5 +1,6 @@
 import Hero from "./Hero";
 import BlogCard from "../../components/BlogCard";
+import { useNavigate } from "react-router-dom";
 
 const dummyBlogs = [
     {
@@ -47,6 +48,8 @@ const dummyBlogs = [
 ];
 
 export default function Home() {
+    const navigate = useNavigate();
+
     return (
         <>
             <Hero />
@@ -66,7 +69,7 @@ export default function Home() {
                                 category={blog.category}
                                 title={blog.title}
                                 date={blog.date}
-                                onClick={() => console.log(`Clicked blog: ${blog.title}`)}
+                                onClick={() => navigate(`/blog/${blog.id}`)}
                             />
                         ))}
                     </div>

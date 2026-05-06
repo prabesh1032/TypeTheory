@@ -6,6 +6,7 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import Category from './pages/Category'
 import Blogs from './pages/Blogs'
+import ViewBlog from './pages/ViewBlog'
 import MyContain from './pages/MyContain'
 import Login  from './pages/auth/Login';
 import Register  from './pages/auth/Signup';
@@ -13,12 +14,14 @@ import NotFound from './pages/NotFound'
 import ProtectedRoute from './routes/ProtectedRoute'
 import PublicRoute from './routes/PublicRoute'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
 
   return (
     <>
       <BrowserRouter>
+      <ScrollToTop />
         <Routes>
           {/* Public Routes with MasterLayout */}
           <Route path="/" element={<MasterLayout />} >
@@ -27,6 +30,7 @@ function App() {
             <Route path="contact" element={<Contact />} />
             <Route path="category" element={<Category />} />
             <Route path="blog" element={<Blogs />} />
+            <Route path="blog/:id" element={<ViewBlog />} />
           </Route>
 
           {/* Auth Routes */}
