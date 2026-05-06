@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Eye, EyeOff } from 'lucide-react';
 import AuthService from '../../services/authService';
+import useStateContext from '../../context/useStateContext';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 
@@ -45,6 +46,7 @@ export default function Register() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const navigate = useNavigate();
+  const { setUser, setToken } = useStateContext();
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -55,9 +57,9 @@ export default function Register() {
 
       const res = await AuthService.signup(data);
 
-      console.log(res);
-
-      navigate("/login");
+      setUser(res.user);
+      setToken(res.token);
+      navigate("/");
 
     } catch (err) {
       if (err.response?.data?.errors) {
@@ -150,14 +152,22 @@ export default function Register() {
           {errors.password_confirmation && <p className="text-red-500 text-sm mt-1">{errors.password_confirmation.message}</p>}
         </div>
 
-        {/* Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {loading ? "Registering..." : "Register"}
-        </button>
+        {/* Server Error */}
+{serverError && (
+  <p className="text-red-500 text-sm mb-4 text-center">
+    {serverError}
+  </p>
+)}
+
+{/* Button */}
+<button
+  type="submit"
+  disabled={loading}
+  className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
+>
+  {loading ? "Registering..." : "Register"}
+</button>
+
 
       </form>
     </div>

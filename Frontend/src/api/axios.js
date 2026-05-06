@@ -14,8 +14,14 @@ axiosClient.interceptors.response.use((response) => {
 },(error) => {
     const { response } = error;
     if (response && response.status === 401) {
-        localStorage.removeItem("ACCESS_TOKEN");
-        window.location.href = "/login";
+        const token = localStorage.getItem("ACCESS_TOKEN");
+        if (token) {
+            localStorage.removeItem("ACCESS_TOKEN");
+            const path = window.location.pathname;
+            if (path !== "/login" && path !== "/register") {
+                window.location.href = "/login";
+            }
+        }
     }
    return Promise.reject(error);
     
