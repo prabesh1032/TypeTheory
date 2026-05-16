@@ -65,6 +65,7 @@ export default function MyContain() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-end gap-4 mb-10">
           <button
             type="button"
+              onClick={() => navigate("/mycontains/createblog")}
             className="inline-flex items-center justify-center rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-indigo-700 transition"
           >
             + Create Blog
