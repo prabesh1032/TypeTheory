@@ -15,7 +15,7 @@ export default function Navlinks({ isMobile = false, onNavigate }) {
     { name: "Home", href: "/" },
     { name: "Categories", href: "/category" },
     { name: "Blog", href: "/blog" },
-    ...(token ? [{ name: "My Contain", href: "/mycontain" }] : []),
+    ...(token ? [{ name: "My Contain", href: "/mycontains" }] : []),
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
