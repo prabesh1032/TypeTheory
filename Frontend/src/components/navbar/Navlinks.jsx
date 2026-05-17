@@ -1,21 +1,20 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import useStateContext from "../../context/useStateContext";
 import AuthService from "../../services/authService";
 
 export default function Navlinks({ isMobile = false, onNavigate }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
-  const { token, setUser, setToken } = useStateContext();
+  const { token, setUser, setToken, user } = useStateContext();
   const navigate = useNavigate();
+  const location = useLocation();
+  const dropdownRef = useRef(null);
 
   const links = [
-    { name: "Home", href: "/" },
     { name: "Categories", href: "/category" },
-    { name: "Blog", href: "/blog" },
-    ...(token ? [{ name: "My Contain", href: "/mycontains" }] : []),
+    ...(token ? [{ name: "My Content", href: "/mycontains" }] : []),
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
@@ -28,12 +27,23 @@ export default function Navlinks({ isMobile = false, onNavigate }) {
     "Food",
   ];
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleLogout = async () => {
     try {
       setLoggingOut(true);
       await AuthService.logout();
     } catch (err) {
-      // Ignore logout errors;
+      // Ignore logout errors
     } finally {
       setToken(null);
       setUser({});
@@ -43,75 +53,110 @@ export default function Navlinks({ isMobile = false, onNavigate }) {
     }
   };
 
+  const isActive = (href) => location.pathname === href;
+
+  const linkClasses = (href) => `
+    inline-flex items-center transition-all duration-300 text-base sm:text-lg px-2 py-1
+    ${isActive(href)
+      ? "text-gray-900 font-semibold"
+      : "text-gray-600 hover:text-gray-900"
+    }
+  `;
+
   const listClass = isMobile
-    ? "flex flex-col gap-4 text-gray-700 font-medium"
-    : "flex space-x-8 text-gray-700 font-medium relative";
+    ? "flex flex-col gap-4 text-gray-700"
+    : "flex items-center space-x-6 text-gray-700";
+
   const dropdownClass = isMobile
-    ? "mt-2 w-full rounded-md border border-gray-100 bg-white py-2 shadow-sm"
-    : "absolute top-8 left-0 z-12 bg-white shadow-lg rounded-md py-3 w-40";
+    ? "mt-2 ml-4 w-[calc(100%-1rem)] rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+    : "absolute top-full left-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[200px] z-50 animate-fadeIn";
 
   return (
     <ul className={listClass}>
-      {links.map((link) => (
-        <li key={link.name} className="relative">
-          
-          {/* Normal Links */}
-          {link.name !== "Categories" && (
-            <Link
-              to={link.href}
-              onClick={onNavigate}
-              className="hover:text-black cursor-pointer"
-            >
-              {link.name}
-            </Link>
-          )}
-
-          {/* Categories with Dropdown */}
-          {link.name === "Categories" && (
-            <>
-              <button
-                onClick={() => setShowDropdown(!showDropdown)}
-                className="flex items-center hover:text-black"
+      {links.map((link) => {
+        const isCategories = link.name === "Categories";
+        
+        return (
+          <li key={link.name} className="relative">
+            {!isCategories && (
+              <Link
+                to={link.href}
+                onClick={onNavigate}
+                className={linkClasses(link.href)}
               >
-                {link.name}
-                <ChevronDown size={16} className="ml-1" />
-              </button>
+                <span>{link.name}</span>
+              </Link>
+            )}
 
-              {showDropdown && (
-                <div className={dropdownClass}>
-                  {categories.map((category) => (
-                    <div
-                      key={category}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    >
-                      {category}
+            {isCategories && (
+              <div ref={dropdownRef} className="relative">
+                <button
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  className={`inline-flex items-center gap-2 transition-all duration-300 ${
+                    showDropdown ? "text-gray-900" : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  <span className="text-base sm:text-lg">Categories</span>
+                  <span
+                    className={`text-xs transition-transform duration-300 ${
+                      showDropdown ? "rotate-180" : ""
+                    }`}
+                    aria-hidden="true"
+                  >
+                    ▼
+                  </span>
+                </button>
+
+                {showDropdown && (
+                  <div className={dropdownClass}>
+                    <div className="py-1">
+                      {categories.map((category) => (
+                        <Link
+                          key={category}
+                          to={`/category/${category.toLowerCase()}`}
+                          onClick={() => {
+                            setShowDropdown(false);
+                            if (onNavigate) onNavigate();
+                          }}
+                          className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 transition-all duration-200"
+                        >
+                          {category}
+                        </Link>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
-        </li>
-      ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </li>
+        );
+      })}
 
-      {token ? (
-        <li className="relative">
-          <button
-            type="button"
-            onClick={handleLogout}
-            disabled={loggingOut}
-            className="hover:text-black disabled:opacity-60 disabled:cursor-not-allowed"
+      {/* Auth Button */}
+      <li className={!isMobile ? "ml-4 pl-4 border-l border-gray-200" : "mt-2 pt-2 border-t border-gray-100"}>
+        {token ? (
+          <div className="relative group">
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="inline-flex items-center px-5 py-2.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-300 disabled:opacity-60 text-base"
+            >
+              <span className="font-medium">
+                {loggingOut ? "Logging out..." : "Logout"}
+              </span>
+            </button>
+          </div>
+        ) : (
+          <Link
+            to="/login"
+            onClick={onNavigate}
+            className="inline-flex items-center px-5 py-2.5 rounded-lg bg-gradient-to-r from-gray-900 to-gray-800 text-white hover:from-gray-800 hover:to-gray-700 transition-all duration-300 shadow-md hover:shadow-lg text-base"
           >
-            {loggingOut ? "Logging out..." : "Logout"}
-          </button>
-        </li>
-      ) : (
-        <li className="relative">
-          <Link to="/login" onClick={onNavigate} className="hover:text-black cursor-pointer">
-            Login
+            <span className="font-medium">Login</span>
           </Link>
-        </li>
-      )}
+        )}
+      </li>
     </ul>
   );
-};
+}
