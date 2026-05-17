@@ -11,7 +11,7 @@ class BlogController extends Controller
 {
     public function index()
     {
-        $blogs = Blog::latest()->get();
+        $blogs = Blog::with('user:id,name')->latest()->get();
 
         return response()->json([
             'blogs' => $blogs
@@ -38,6 +38,8 @@ class BlogController extends Controller
             'slug' => Str::slug($request->title),
         ]);
 
+        $blog->load('user:id,name');
+
         return response()->json([
             'message' => 'Blog created successfully',
             'blog' => $blog
@@ -46,7 +48,8 @@ class BlogController extends Controller
 
     public function myBlogs(Request $request)
     {
-        $blogs = Blog::where('user_id', $request->user()->id)
+        $blogs = Blog::with('user:id,name')
+            ->where('user_id', $request->user()->id)
             ->latest()
             ->get();
 
@@ -57,7 +60,7 @@ class BlogController extends Controller
 
     public function show($id)
     {
-        $blog = Blog::findOrFail($id);
+        $blog = Blog::with('user:id,name')->findOrFail($id);
 
         return response()->json([
             'blog' => $blog

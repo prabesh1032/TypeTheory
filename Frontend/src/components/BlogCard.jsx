@@ -1,4 +1,14 @@
-export default function BlogCard({ image, category, title, date, onClick }) {
+import defaultAvatar from "../assets/useravatar/useravatar.avif";
+
+export default function BlogCard({
+    image,
+    category,
+    title,
+    date,
+    onClick,
+    authorName = "Author",
+    authorImage,
+}) {
     return (
         <div 
             className="group w-full bg-white rounded-xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
@@ -29,6 +39,17 @@ export default function BlogCard({ image, category, title, date, onClick }) {
                 <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
                     {title}
                 </h3>
+
+                {/* Author */}
+                <div className="flex items-center gap-3 mt-4">
+                    <img
+                        src={authorImage || defaultAvatar}
+                        alt={authorName}
+                        className="w-9 h-9 rounded-full object-cover"
+                        loading="lazy"
+                    />
+                    <span className="text-sm font-medium text-gray-700">{authorName}</span>
+                </div>
 
                 {/* Meta Information Row */}
                 <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">

@@ -97,6 +97,7 @@ export default function MyContain() {
                 category={(blog.category || "").toUpperCase()}
                 title={blog.title}
                 date={formatDate(blog.created_at)}
+                authorName={blog.user?.name || "Author"}
                 onClick={() => navigate(`/blog/${blog.id}`)}
               />
             ))}
