@@ -22,6 +22,7 @@ const BlogService = {
   // Create blog
   async createBlog(data) {
     const response = await createBlogAPI(data);
+    console.log(response);
     return response;
   },
 
