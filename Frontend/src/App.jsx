@@ -5,7 +5,6 @@ import Home from './pages/home/Home'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import Category from './pages/Category'
-import Blogs from './pages/Blogs'
 import ViewBlog from './pages/ViewBlog'
 import MyContain from './pages/MyContain'
 import CreateBlog from './pages/CreateBlog'
@@ -31,7 +30,6 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
             <Route path="category" element={<Category />} />
-            <Route path="blog" element={<Blogs />} />
             <Route path="blog/:id" element={<ViewBlog />} />
 
             {/* Protected Routes */}
