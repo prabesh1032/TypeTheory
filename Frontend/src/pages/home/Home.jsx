@@ -4,6 +4,7 @@ import Hero from "./Hero";
 import BlogCard from "../../components/BlogCard";
 import BlogService from "../../services/blogService";
 import LoadMore from "../../components/LoadMore";
+import useStateContext from "../../context/useStateContext";
 
 const getBlogImageUrl = (image) => {
     if (!image) return "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&h=800&fit=crop";
@@ -16,6 +17,7 @@ const getBlogImageUrl = (image) => {
 
 export default function Home() {
     const navigate = useNavigate();
+    const { token } = useStateContext();
     const [blogs, setBlogs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
@@ -89,6 +91,10 @@ export default function Home() {
     };
 
     const toggleLike = (blogId) => {
+        if (!token) {
+            navigate("/login");
+            return;
+        }
         setLikedBlogs((current) => ({
             ...current,
             [blogId]: !current[blogId],
@@ -96,6 +102,10 @@ export default function Home() {
     };
 
     const toggleBookmark = (blogId) => {
+        if (!token) {
+            navigate("/login");
+            return;
+        }
         setBookmarkedBlogs((current) => ({
             ...current,
             [blogId]: !current[blogId],
