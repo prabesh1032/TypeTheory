@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Hero from "./Hero";
 import BlogCard from "../../components/BlogCard";
 import BlogService from "../../services/blogService";
+import LoadMore from "../../components/LoadMore";
 
 export default function Home() {
     const navigate = useNavigate();
@@ -56,9 +57,6 @@ export default function Home() {
             .toUpperCase();
     };
 
-    const fallbackImage =
-        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop";
-
     return (
         <>
             <Hero />
@@ -71,7 +69,7 @@ export default function Home() {
                         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                             Latest Articles
                         </h2>
-                        <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto rounded-full"></div>
+                        <div className="w-20 h-1 bg-black mx-auto rounded-full"></div>
                         <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-sm sm:text-base">
                             Discover insights, tutorials, and stories from our community
                         </p>
@@ -123,7 +121,7 @@ export default function Home() {
                                         style={{ animationDelay: `${index * 100}ms` }}
                                     >
                                         <BlogCard
-                                            image={blog.image || fallbackImage}
+                                            image={blog.image }
                                             category={(blog.category || "").toUpperCase()}
                                             title={blog.title}
                                             date={formatDate(blog.created_at)}
@@ -136,12 +134,9 @@ export default function Home() {
                             
                             {/* Optional: Load More Button */}
                             <div className="text-center mt-12 sm:mt-16">
-                                <button 
-                                    onClick={() => {/* Implement load more logic */}}
-                                    className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-full hover:from-gray-800 hover:to-gray-700 transition-all duration-300 shadow-md hover:shadow-lg text-sm sm:text-base font-medium"
-                                >
+                                <LoadMore onClick={() => { /* Implement load more logic */ }}>
                                     Load More Articles
-                                </button>
+                                </LoadMore>
                             </div>
                         </>
                     )}
