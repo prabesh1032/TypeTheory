@@ -53,9 +53,6 @@ export default function MyContain() {
       .toUpperCase();
   };
 
-  const fallbackImage =
-    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop";
-
   return (
     <section className="bg-gray-50 min-h-screen">
       <div className="relative w-full h-40 md:h-48 ">
@@ -93,7 +90,7 @@ export default function MyContain() {
             {blogs.map((blog) => (
               <BlogCard
                 key={blog.id}
-                image={blog.image || fallbackImage}
+                image={blog.image}
                 category={(blog.category || "").toUpperCase()}
                 title={blog.title}
                 date={formatDate(blog.created_at)}
