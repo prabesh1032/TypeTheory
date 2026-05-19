@@ -65,7 +65,7 @@ export default function MyContain() {
   return (
     <section className="bg-gray-50 min-h-screen">
       <div className="relative w-full h-40 md:h-48 ">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600&h=600&fit=crop')] bg-cover bg-center opacity-20" />
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600&h=600&fit=crop')] bg-cover bg-center opacity-50" />
         <div className="relative max-w-7xl mx-auto h-full px-4 flex items-center">
           <div className="text-black">
             <p className="text-xs tracking-[0.35em] uppercase text-black/80">My Space</p>
@@ -111,15 +111,7 @@ export default function MyContain() {
                   authorName={blog.user?.name || "Author"}
                   onClick={() => navigate(`/blog/${blog.id}`)}
                 />
-                <div className="mt-3 flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => navigate("/mycontains/editblog", { state: { blog } })}
-                    className="rounded-full border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-600 transition hover:border-indigo-300 hover:text-indigo-600"
-                  >
-                    Edit Blog
-                  </button>
-                </div>
+        
               </div>
             ))}
           </div>

@@ -2,13 +2,35 @@ import React, { useState, useEffect } from "react";
 import Navlinks from "./navlinks";
 import { FaSearch } from "react-icons/fa";
 import { Menu, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo/typetheory.png";
+import avatar from "../../assets/useravatar/useravatar.avif";
+import useStateContext from "../../context/useStateContext";
+import AuthService from "../../services/authService";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
+  const navigate = useNavigate();
+  const { token, setUser, setToken } = useStateContext();
+
+  const profileLinks = [
+    { name: "Profile", href: "/profile" },
+    { name: "Bookmarked", href: "/bookmarked" },
+    { name: "Liked", href: "/liked" },
+  ];
+
+  const handleLogout = async () => {
+    try {
+      await AuthService.logout();
+    } catch {
+      // ignore logout errors and clear local state anyway
+    } finally {
+      setUser({});
+      setToken(null);
+      navigate("/");
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,11 +39,6 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [location]);
 
   return (
     <nav className={`w-full px-4 sm:px-6 lg:px-8 py-1 sm:py-2 transition-all duration-300 sticky top-0 z-50 ${
@@ -56,6 +73,48 @@ export default function Navbar() {
               </span>
               <FaSearch className="text-gray-500 group-hover:text-gray-900 transition-colors w-4 h-4" />
             </button>
+
+            {token ? (
+              <div className="relative hidden md:block group">
+                <button
+                  type="button"
+                  className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-gray-200 bg-white shadow-sm transition-transform duration-300 group-hover:scale-105"
+                  aria-label="Open profile menu"
+                >
+                  <img
+                    src={avatar}
+                    alt="User avatar"
+                    className="h-full w-full object-cover"
+                  />
+                </button>
+
+                <div className="absolute right-0 top-full mt-3 w-44 overflow-hidden rounded-2xl border border-gray-100 bg-white py-2 shadow-xl opacity-0 invisible translate-y-2 transition-all duration-200 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
+                  {profileLinks.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className="block px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="block w-full px-4 py-3 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="hidden md:inline-flex items-center justify-center h-12 rounded-full bg-gray-900 px-5 text-sm font-semibold text-white transition hover:bg-gray-800"
+              >
+                Login
+              </Link>
+            )}
 
             {/* Mobile Menu Button */}
             <button
