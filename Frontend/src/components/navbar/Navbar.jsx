@@ -12,7 +12,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
-  const { token, setUser, setToken } = useStateContext();
+  const { token, user, setUser, setToken } = useStateContext();
 
   const profileLinks = [
     { name: "Profile", href: "/profile" },
@@ -84,8 +84,8 @@ export default function Navbar() {
                   aria-label="Open profile menu"
                 >
                   <img
-                    src={avatar}
-                    alt="User avatar"
+                    src={user?.profile_picture || avatar}
+                    alt={user?.name || "User avatar"}
                     className="h-full w-full object-cover"
                   />
                 </button>

@@ -109,6 +109,7 @@ export default function MyContain() {
                   title={blog.title}
                   date={formatDate(blog.created_at)}
                   authorName={blog.user?.name || "Author"}
+                  authorImage={blog.user?.profile?.profile_pic ? getBlogImageUrl(blog.user.profile.profile_pic) : undefined}
                   onClick={() => navigate(`/blog/${blog.id}`)}
                 />
         
