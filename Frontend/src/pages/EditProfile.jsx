@@ -4,6 +4,7 @@ import { useState } from "react";
 import useStateContext from "../context/useStateContext";
 import AuthService from "../services/authService";
 import defaultAvatar from "../assets/useravatar/useravatar.avif";
+import { showErrorToast, showSuccessToast } from "../components/ShowToast";
 
 export default function EditProfile() {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ export default function EditProfile() {
         payload.append("profile_pic", data.profile_pic);
       }
 
-      const response = await AuthService.updateProfile(payload);
+      await AuthService.updateProfile(payload);
 
       // Refresh current user + profile from server and merge into client user
       try {
@@ -66,10 +67,11 @@ export default function EditProfile() {
             : newUser.profile_picture;
         }
         setUser(newUser);
-      } catch (err) {
+      } catch {
         // fallback: if refresh fails, leave existing user
       }
 
+      showSuccessToast("Profile updated successfully");
       // Navigate back to profile page
       navigate("/profile");
     } catch (error) {
@@ -78,6 +80,7 @@ export default function EditProfile() {
         error?.message ||
         "Failed to update profile";
       setServerError(message);
+      showErrorToast(message);
     } finally {
       setIsSubmitting(false);
     }

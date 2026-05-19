@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import BlogService from "../services/blogService";
+import { showErrorToast, showSuccessToast } from "../components/ShowToast";
 
 const categories = [
   "Design",
@@ -45,6 +46,7 @@ export default function CreateBlog() {
       }
 
       await BlogService.createBlog(payload);
+      showSuccessToast("Blog created successfully");
       navigate("/mycontains");
     } catch (error) {
       const message =
@@ -52,6 +54,7 @@ export default function CreateBlog() {
         error?.message ||
         "Failed to create blog";
       setServerError(message);
+      showErrorToast(message);
     }
   };
 

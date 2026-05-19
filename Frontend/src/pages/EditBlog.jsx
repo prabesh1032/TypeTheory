@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import BlogService from "../services/blogService";
+import { showErrorToast, showSuccessToast } from "../components/ShowToast";
 
 const categories = [
   "Design",
@@ -78,11 +79,13 @@ export default function EditBlog() {
         await BlogService.updateBlog(blog.id, payload);
       }
 
+      showSuccessToast("Blog updated successfully");
       navigate("/mycontains");
     } catch (error) {
       const message =
         error?.response?.data?.message || error?.message || "Failed to update blog";
       setServerError(message);
+      showErrorToast(message);
     }
   };
 
