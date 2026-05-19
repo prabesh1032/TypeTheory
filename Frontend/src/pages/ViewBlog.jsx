@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../api/axios";
 import BlogService from "../services/blogService";
 import useStateContext from "../context/useStateContext";
+import { showErrorToast, showSuccessToast } from "../components/ShowToast";
 
 const fallbackImage =
   "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1200&h=900&fit=crop";
@@ -89,10 +90,12 @@ export default function ViewBlog() {
     try {
       setActionError("");
       await BlogService.deleteBlog(blog.id);
+      showSuccessToast("Blog deleted successfully");
       navigate("/mycontains");
     } catch (err) {
       const message = err?.response?.data?.message || err?.message || "Failed to delete blog";
       setActionError(message);
+      showErrorToast(message);
     }
   };
 

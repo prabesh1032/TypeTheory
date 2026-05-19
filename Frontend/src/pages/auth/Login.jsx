@@ -4,6 +4,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../../services/authService';
 import useStateContext from '../../context/useStateContext';
+import { showErrorToast, showSuccessToast } from '../../components/ShowToast';
 
 export default function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -24,15 +25,19 @@ export default function Login() {
       const res = await AuthService.login(data);
       setUser(res.user);
       setToken(res.token);
+      showSuccessToast("Logged in successfully");
       navigate("/");
     } catch (err) {
       if (err.response?.data?.errors) {
         const firstError = Object.values(err.response.data.errors)[0][0];
         setServerError(firstError);
+        showErrorToast(firstError);
       } else if (err.response?.data?.message) {
         setServerError(err.response.data.message);
+        showErrorToast(err.response.data.message);
       } else {
         setServerError("Invalid email or password");
+        showErrorToast("Invalid email or password");
       }
     }
     finally {
@@ -41,7 +46,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-teal-500">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-blue-500 to-teal-500">
 
       <form
         onSubmit={handleSubmit(submitForm)}

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react'
 import { useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +7,7 @@ import AuthService from '../../services/authService';
 import useStateContext from '../../context/useStateContext';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
+import { showErrorToast, showSuccessToast } from '../../components/ShowToast';
 
 const formSchema = z
   .object({
@@ -59,16 +59,20 @@ export default function Register() {
 
       setUser(res.user);
       setToken(res.token);
+      showSuccessToast("Account created successfully");
       navigate("/");
 
     } catch (err) {
       if (err.response?.data?.errors) {
         const firstError = Object.values(err.response.data.errors)[0][0];
         setServerError(firstError);
+        showErrorToast(firstError);
       } else if (err.response?.data?.message) {
         setServerError(err.response.data.message);
+        showErrorToast(err.response.data.message);
       } else {
         setServerError("Something went wrong");
+        showErrorToast("Something went wrong");
       }
     } finally {
       setLoading(false);
@@ -76,7 +80,7 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-indigo-500 to-purple-600">
 
       <form
         onSubmit={handleSubmit(submitForm)}
