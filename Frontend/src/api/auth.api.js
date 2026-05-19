@@ -12,3 +12,11 @@ export const logoutAPI = async() => {
   const res = await api.post("/logout");
   return res.data;
 }
+export const updateProfileAPI = async(payload) => {
+  const res = await api.put('/user/profile', payload);
+  return res.data;
+}
+export const getUserProfileAPI = async() => {
+  const res = await api.get('/user/profile');
+  return res.data;
+}

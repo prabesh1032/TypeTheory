@@ -1,4 +1,4 @@
-import { loginAPI, signupAPI, logoutAPI } from '../api/auth.api';
+import { loginAPI, signupAPI, logoutAPI, updateProfileAPI, getUserProfileAPI } from '../api/auth.api';
 
 const AuthService = {
   // signup user
@@ -18,6 +18,16 @@ const AuthService = {
   // Logout user
   async logout() {
     const response = await logoutAPI();
+    return response;
+  },
+  
+  // Update user profile
+  async updateProfile(data) {
+    const response = await updateProfileAPI(data);
+    return response;
+  },
+  async getUserProfile() {
+    const response = await getUserProfileAPI();
     return response;
   },
 

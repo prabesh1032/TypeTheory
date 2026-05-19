@@ -12,7 +12,7 @@ class BlogController extends Controller
 {
     public function index()
     {
-        $blogs = Blog::with('user:id,name')->latest()->get();
+        $blogs = Blog::with('user.profile')->latest()->get();
 
         return response()->json([
             'blogs' => $blogs
@@ -37,7 +37,7 @@ class BlogController extends Controller
 
         $blog = Blog::create($data);
 
-        $blog->load('user:id,name');
+        $blog->load('user.profile');
 
         return response()->json([
             'message' => 'Blog created successfully',
@@ -47,7 +47,7 @@ class BlogController extends Controller
 
     public function myBlogs(Request $request)
     {
-        $blogs = Blog::with('user:id,name')
+        $blogs = Blog::with('user.profile')
             ->where('user_id', $request->user()->id)
             ->latest()
             ->get();
@@ -59,7 +59,7 @@ class BlogController extends Controller
 
     public function show($id)
     {
-        $blog = Blog::with('user:id,name')->findOrFail($id);
+        $blog = Blog::with('user.profile')->findOrFail($id);
 
         return response()->json([
             'blog' => $blog
@@ -91,7 +91,7 @@ class BlogController extends Controller
 
         return response()->json([
             'message' => 'Blog updated successfully',
-            'blog' => $blog->fresh()->load('user:id,name')
+            'blog' => $blog->fresh()->load('user.profile')
         ]);
     }
 

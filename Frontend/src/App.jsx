@@ -11,6 +11,8 @@ import LikedBlogs from './pages/LikedBlogs'
 import BookmarkedBlogs from './pages/BookmarkedBlogs'
 import CreateBlog from './pages/CreateBlog'
 import EditBlog from './pages/EditBlog'
+import UserProfile from './pages/UserProfile'
+import EditProfile from './pages/EditProfile'
 import Login  from './pages/auth/Login';
 import Register  from './pages/auth/Signup';
 import NotFound from './pages/NotFound'
@@ -40,6 +42,8 @@ function App() {
               <Route path="mycontains" element={<MyContain />} />
               <Route path="liked" element={<LikedBlogs />} />
               <Route path="bookmarked" element={<BookmarkedBlogs />} />
+              <Route path="profile" element={<UserProfile />} />
+              <Route path="profile/edit" element={<EditProfile />} />
               <Route path="mycontains/createblog" element={<CreateBlog />} />
               <Route path="mycontains/editblog" element={<EditBlog />} />
             </Route>
