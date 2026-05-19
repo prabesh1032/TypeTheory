@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BlogCard from "../components/BlogCard";
 import BlogService from "../services/blogService";
+import LoadMore from "../components/LoadMore";
+
+const BLOGS_PER_PAGE = 6;
 
 const getBlogImageUrl = (image) => {
   if (!image) return "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&h=800&fit=crop";
@@ -15,6 +18,7 @@ const getBlogImageUrl = (image) => {
 export default function MyContain() {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(BLOGS_PER_PAGE);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -29,6 +33,7 @@ export default function MyContain() {
         const list = Array.isArray(data?.blogs) ? data.blogs : [];
         if (isMounted) {
           setBlogs(list);
+          setVisibleCount(BLOGS_PER_PAGE);
         }
       } catch (err) {
         const message =
@@ -61,6 +66,9 @@ export default function MyContain() {
       })
       .toUpperCase();
   };
+
+  const visibleBlogs = blogs.slice(0, visibleCount);
+  const canLoadMore = visibleCount < blogs.length;
 
   return (
     <section className="bg-gray-50 min-h-screen">
@@ -100,22 +108,31 @@ export default function MyContain() {
         ) : blogs.length === 0 ? (
           <p className="text-center text-sm text-gray-500">No blogs found.</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
-            {blogs.map((blog) => (
-              <div key={blog.id} className="w-full">
-                <BlogCard
-                  image={getBlogImageUrl(blog.image)}
-                  category={(blog.category || "").toUpperCase()}
-                  title={blog.title}
-                  date={formatDate(blog.created_at)}
-                  authorName={blog.user?.name || "Author"}
-                  authorImage={blog.user?.profile?.profile_pic ? getBlogImageUrl(blog.user.profile.profile_pic) : undefined}
-                  onClick={() => navigate(`/blog/${blog.id}`)}
-                />
-        
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+              {visibleBlogs.map((blog) => (
+                <div key={blog.id} className="w-full">
+                  <BlogCard
+                    image={getBlogImageUrl(blog.image)}
+                    category={(blog.category || "").toUpperCase()}
+                    title={blog.title}
+                    date={formatDate(blog.created_at)}
+                    authorName={blog.user?.name || "Author"}
+                    authorImage={blog.user?.profile?.profile_pic ? getBlogImageUrl(blog.user.profile.profile_pic) : undefined}
+                    onClick={() => navigate(`/blog/${blog.id}`)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {canLoadMore && (
+              <div className="text-center mt-12 sm:mt-16">
+                <LoadMore onClick={() => setVisibleCount((count) => count + BLOGS_PER_PAGE)}>
+                  Load More Articles
+                </LoadMore>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     </section>

@@ -34,6 +34,7 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
             <Route path="category" element={<Category />} />
+            <Route path="category/:slug" element={<Category />} />
             <Route path="blog/:id" element={<ViewBlog />} />
 
             {/* Protected Routes */}

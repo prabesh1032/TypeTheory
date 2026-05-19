@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Hero from "./Hero";
 import BlogCard from "../../components/BlogCard";
 import BlogService from "../../services/blogService";
 import LoadMore from "../../components/LoadMore";
 import useStateContext from "../../context/useStateContext";
+
+const BLOGS_PER_PAGE = 6;
 
 const getBlogImageUrl = (image) => {
     if (!image) return "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&h=800&fit=crop";
@@ -17,8 +19,10 @@ const getBlogImageUrl = (image) => {
 
 export default function Home() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { token } = useStateContext();
     const [blogs, setBlogs] = useState([]);
+    const [visibleCount, setVisibleCount] = useState(BLOGS_PER_PAGE);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
     const [likedBlogs, setLikedBlogs] = useState(() => {
@@ -35,6 +39,7 @@ export default function Home() {
             return {};
         }
     });
+    const selectedCategory = (searchParams.get("category") || "").trim();
 
     useEffect(() => {
         localStorage.setItem("HOME_BLOG_LIKES", JSON.stringify(likedBlogs));
@@ -43,6 +48,10 @@ export default function Home() {
     useEffect(() => {
         localStorage.setItem("HOME_BLOG_BOOKMARKS", JSON.stringify(bookmarkedBlogs));
     }, [bookmarkedBlogs]);
+
+    useEffect(() => {
+        setVisibleCount(BLOGS_PER_PAGE);
+    }, [selectedCategory]);
 
     useEffect(() => {
         let isMounted = true;
@@ -55,6 +64,7 @@ export default function Home() {
                 const list = Array.isArray(data?.blogs) ? data.blogs : [];
                 if (isMounted) {
                     setBlogs(list);
+                                    setVisibleCount(BLOGS_PER_PAGE);
                 }
             } catch (err) {
                 const message =
@@ -112,6 +122,17 @@ export default function Home() {
         }));
     };
 
+    const filteredBlogs = useMemo(() => {
+        if (!selectedCategory) {
+            return blogs;
+        }
+
+        return blogs.filter((blog) => (blog.category || "").toLowerCase() === selectedCategory.toLowerCase());
+    }, [blogs, selectedCategory]);
+
+    const visibleBlogs = filteredBlogs.slice(0, visibleCount);
+    const canLoadMore = visibleCount < filteredBlogs.length;
+
     return (
         <>
             <Hero />
@@ -122,11 +143,13 @@ export default function Home() {
                     {/* Section Header */}
                     <div className="text-center mb-10 sm:mb-12 md:mb-16">
                         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-linear-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                            Latest Articles
+                            {selectedCategory ? `${selectedCategory[0].toUpperCase()}${selectedCategory.slice(1).toLowerCase()} Articles` : "Latest Articles"}
                         </h2>
                         <div className="w-20 h-1 bg-black mx-auto rounded-full"></div>
                         <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-sm sm:text-base">
-                            Discover insights, tutorials, and stories from our community
+                            {selectedCategory
+                                ? `Showing posts in the ${selectedCategory} category`
+                                : "Discover insights, tutorials, and stories from our community"}
                         </p>
                     </div>
                     
@@ -166,10 +189,10 @@ export default function Home() {
                     )}
                     
                     {/* Blog Cards Grid */}
-                    {!isLoading && blogs.length > 0 && (
+                    {!isLoading && filteredBlogs.length > 0 && (
                         <>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
-                                {blogs.map((blog, index) => (
+                                {visibleBlogs.map((blog, index) => (
                                     <div
                                         key={blog.id}
                                         className="transform transition-all duration-300 hover:-translate-y-1"
@@ -193,13 +216,23 @@ export default function Home() {
                                 ))}
                             </div>
                             
-                            {/* Optional: Load More Button */}
-                            <div className="text-center mt-12 sm:mt-16">
-                                <LoadMore onClick={() => { /* Implement load more logic */ }}>
-                                    Load More Articles
-                                </LoadMore>
-                            </div>
+                            {canLoadMore && (
+                                <div className="text-center mt-12 sm:mt-16">
+                                    <LoadMore onClick={() => setVisibleCount((count) => count + BLOGS_PER_PAGE)}>
+                                        Load More Articles
+                                    </LoadMore>
+                                </div>
+                            )}
                         </>
+                    )}
+
+                    {!isLoading && !error && selectedCategory && filteredBlogs.length === 0 && (
+                        <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center shadow-sm">
+                            <h3 className="text-lg font-semibold text-gray-900">No blogs found</h3>
+                            <p className="mt-2 text-sm text-gray-500">
+                                No posts are available for the {selectedCategory} category yet.
+                            </p>
+                        </div>
                     )}
                 </div>
             </section>

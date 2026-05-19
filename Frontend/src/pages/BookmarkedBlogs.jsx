@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BlogCard from "../components/BlogCard";
 import BlogService from "../services/blogService";
+import LoadMore from "../components/LoadMore";
+
+const BLOGS_PER_PAGE = 6;
 
 const getBlogImageUrl = (image) => {
   if (!image) {
@@ -18,6 +21,7 @@ const getBlogImageUrl = (image) => {
 export default function BookmarkedBlogs() {
   const navigate = useNavigate();
   const [allBlogs, setAllBlogs] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(BLOGS_PER_PAGE);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [likedBlogs, setLikedBlogs] = useState(() => {
@@ -47,6 +51,7 @@ export default function BookmarkedBlogs() {
 
         if (isMounted) {
           setAllBlogs(list);
+          setVisibleCount(BLOGS_PER_PAGE);
         }
       } catch (err) {
         const message =
@@ -108,6 +113,8 @@ export default function BookmarkedBlogs() {
   };
 
   const visibleBlogs = allBlogs.filter((blog) => Boolean(bookmarkedBlogs[blog.id]));
+  const pagedBlogs = visibleBlogs.slice(0, visibleCount);
+  const canLoadMore = visibleCount < visibleBlogs.length;
 
   return (
     <section className="bg-gray-50 min-h-screen">
@@ -143,30 +150,40 @@ export default function BookmarkedBlogs() {
             <p className="text-gray-500">Bookmark posts on the home page to see them here.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
-            {visibleBlogs.map((blog, index) => (
-              <div
-                key={blog.id}
-                className="transform transition-all duration-300 hover:-translate-y-1"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <BlogCard
-                  image={getBlogImageUrl(blog.image)}
-                  category={(blog.category || "").toUpperCase()}
-                  title={blog.title}
-                  date={formatDate(blog.created_at)}
-                  authorName={blog.user?.name || "Author"}
-                  authorImage={blog.user?.profile?.profile_pic ? getBlogImageUrl(blog.user.profile.profile_pic) : undefined}
-                  onClick={() => navigate(`/blog/${blog.id}`)}
-                  showActions
-                  isLiked={Boolean(likedBlogs[blog.id])}
-                  isBookmarked={Boolean(bookmarkedBlogs[blog.id])}
-                  onToggleLike={() => toggleLike(blog.id)}
-                  onToggleBookmark={() => toggleBookmark(blog.id)}
-                />
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
+              {pagedBlogs.map((blog, index) => (
+                <div
+                  key={blog.id}
+                  className="transform transition-all duration-300 hover:-translate-y-1"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <BlogCard
+                    image={getBlogImageUrl(blog.image)}
+                    category={(blog.category || "").toUpperCase()}
+                    title={blog.title}
+                    date={formatDate(blog.created_at)}
+                    authorName={blog.user?.name || "Author"}
+                    authorImage={blog.user?.profile?.profile_pic ? getBlogImageUrl(blog.user.profile.profile_pic) : undefined}
+                    onClick={() => navigate(`/blog/${blog.id}`)}
+                    showActions
+                    isLiked={Boolean(likedBlogs[blog.id])}
+                    isBookmarked={Boolean(bookmarkedBlogs[blog.id])}
+                    onToggleLike={() => toggleLike(blog.id)}
+                    onToggleBookmark={() => toggleBookmark(blog.id)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {canLoadMore && (
+              <div className="text-center mt-12 sm:mt-16">
+                <LoadMore onClick={() => setVisibleCount((count) => count + BLOGS_PER_PAGE)}>
+                  Load More Articles
+                </LoadMore>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     </section>
