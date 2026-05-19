@@ -8,6 +8,7 @@ import Category from './pages/Category'
 import ViewBlog from './pages/ViewBlog'
 import MyContain from './pages/MyContain'
 import LikedBlogs from './pages/LikedBlogs'
+import BookmarkedBlogs from './pages/BookmarkedBlogs'
 import CreateBlog from './pages/CreateBlog'
 import EditBlog from './pages/EditBlog'
 import Login  from './pages/auth/Login';
@@ -38,6 +39,7 @@ function App() {
               <Route path="mycontain" element={<MyContain />} />
               <Route path="mycontains" element={<MyContain />} />
               <Route path="liked" element={<LikedBlogs />} />
+              <Route path="bookmarked" element={<BookmarkedBlogs />} />
               <Route path="mycontains/createblog" element={<CreateBlog />} />
               <Route path="mycontains/editblog" element={<EditBlog />} />
             </Route>

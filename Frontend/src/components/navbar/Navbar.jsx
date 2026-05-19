@@ -28,6 +28,8 @@ export default function Navbar() {
     } finally {
       setUser({});
       setToken(null);
+      localStorage.removeItem("HOME_BLOG_LIKES");
+      localStorage.removeItem("HOME_BLOG_BOOKMARKS");
       navigate("/");
     }
   };
