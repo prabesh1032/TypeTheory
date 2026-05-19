@@ -2,21 +2,35 @@ import React, { useState, useEffect } from "react";
 import Navlinks from "./navlinks";
 import { FaSearch } from "react-icons/fa";
 import { Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo/typetheory.png";
 import avatar from "../../assets/useravatar/useravatar.avif";
 import useStateContext from "../../context/useStateContext";
+import AuthService from "../../services/authService";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { token } = useStateContext();
+  const navigate = useNavigate();
+  const { token, setUser, setToken } = useStateContext();
 
   const profileLinks = [
     { name: "Profile", href: "/profile" },
     { name: "Bookmarked", href: "/bookmarked" },
     { name: "Liked", href: "/liked" },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await AuthService.logout();
+    } catch {
+      // ignore logout errors and clear local state anyway
+    } finally {
+      setUser({});
+      setToken(null);
+      navigate("/");
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -84,6 +98,13 @@ export default function Navbar() {
                       {item.name}
                     </Link>
                   ))}
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="block w-full px-4 py-3 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
+                  >
+                    Logout
+                  </button>
                 </div>
               </div>
             ) : (

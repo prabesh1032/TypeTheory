@@ -19,6 +19,28 @@ export default function Home() {
     const [blogs, setBlogs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const [likedBlogs, setLikedBlogs] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem("HOME_BLOG_LIKES") || "{}");
+        } catch {
+            return {};
+        }
+    });
+    const [bookmarkedBlogs, setBookmarkedBlogs] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem("HOME_BLOG_BOOKMARKS") || "{}");
+        } catch {
+            return {};
+        }
+    });
+
+    useEffect(() => {
+        localStorage.setItem("HOME_BLOG_LIKES", JSON.stringify(likedBlogs));
+    }, [likedBlogs]);
+
+    useEffect(() => {
+        localStorage.setItem("HOME_BLOG_BOOKMARKS", JSON.stringify(bookmarkedBlogs));
+    }, [bookmarkedBlogs]);
 
     useEffect(() => {
         let isMounted = true;
@@ -64,6 +86,20 @@ export default function Home() {
                 year: "numeric",
             })
             .toUpperCase();
+    };
+
+    const toggleLike = (blogId) => {
+        setLikedBlogs((current) => ({
+            ...current,
+            [blogId]: !current[blogId],
+        }));
+    };
+
+    const toggleBookmark = (blogId) => {
+        setBookmarkedBlogs((current) => ({
+            ...current,
+            [blogId]: !current[blogId],
+        }));
     };
 
     return (
@@ -136,6 +172,11 @@ export default function Home() {
                                             date={formatDate(blog.created_at)}
                                             authorName={blog.user?.name || "Author"}
                                             onClick={() => navigate(`/blog/${blog.id}`)}
+                                            showActions
+                                            isLiked={Boolean(likedBlogs[blog.id])}
+                                            isBookmarked={Boolean(bookmarkedBlogs[blog.id])}
+                                            onToggleLike={() => toggleLike(blog.id)}
+                                            onToggleBookmark={() => toggleBookmark(blog.id)}
                                         />
                                     </div>
                                 ))}

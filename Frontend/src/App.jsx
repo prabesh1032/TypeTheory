@@ -7,6 +7,7 @@ import Contact from './pages/Contact'
 import Category from './pages/Category'
 import ViewBlog from './pages/ViewBlog'
 import MyContain from './pages/MyContain'
+import LikedBlogs from './pages/LikedBlogs'
 import CreateBlog from './pages/CreateBlog'
 import EditBlog from './pages/EditBlog'
 import Login  from './pages/auth/Login';
@@ -36,6 +37,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="mycontain" element={<MyContain />} />
               <Route path="mycontains" element={<MyContain />} />
+              <Route path="liked" element={<LikedBlogs />} />
               <Route path="mycontains/createblog" element={<CreateBlog />} />
               <Route path="mycontains/editblog" element={<EditBlog />} />
             </Route>
