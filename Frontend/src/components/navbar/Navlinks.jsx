@@ -118,7 +118,7 @@ export default function Navlinks({ isMobile = false, onNavigate }) {
                             setShowDropdown(false);
                             if (onNavigate) onNavigate();
                           }}
-                          className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 transition-all duration-200"
+                          className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-linear-to-r hover:from-gray-50 hover:to-gray-100 transition-all duration-200"
                         >
                           {category}
                         </Link>
@@ -133,30 +133,32 @@ export default function Navlinks({ isMobile = false, onNavigate }) {
       })}
 
       {/* Auth Button */}
-      <li className={!isMobile ? "ml-4 pl-4 border-l border-gray-200" : "mt-2 pt-2 border-t border-gray-100"}>
-        {token ? (
-          <div className="relative group">
-            <button
-              type="button"
-              onClick={handleLogout}
-              disabled={loggingOut}
-              className="inline-flex items-center px-5 py-2.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-300 disabled:opacity-60 text-base"
+      {isMobile && (
+        <li className="mt-2 pt-2 border-t border-gray-100">
+          {token ? (
+            <div className="relative group">
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={loggingOut}
+                className="inline-flex items-center px-5 py-2.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-300 disabled:opacity-60 text-base"
+              >
+                <span className="font-medium">
+                  {loggingOut ? "Logging out..." : "Logout"}
+                </span>
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              onClick={onNavigate}
+              className="inline-flex items-center px-5 py-2.5 rounded-lg bg-linear-to-r from-gray-900 to-gray-800 text-white hover:from-gray-800 hover:to-gray-700 transition-all duration-300 shadow-md hover:shadow-lg text-base"
             >
-              <span className="font-medium">
-                {loggingOut ? "Logging out..." : "Logout"}
-              </span>
-            </button>
-          </div>
-        ) : (
-          <Link
-            to="/login"
-            onClick={onNavigate}
-            className="inline-flex items-center px-5 py-2.5 rounded-lg bg-gradient-to-r from-gray-900 to-gray-800 text-white hover:from-gray-800 hover:to-gray-700 transition-all duration-300 shadow-md hover:shadow-lg text-base"
-          >
-            <span className="font-medium">Login</span>
-          </Link>
-        )}
-      </li>
+              <span className="font-medium">Login</span>
+            </Link>
+          )}
+        </li>
+      )}
     </ul>
   );
 }
