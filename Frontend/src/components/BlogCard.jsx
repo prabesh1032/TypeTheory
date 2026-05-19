@@ -1,5 +1,5 @@
 import defaultAvatar from "../assets/useravatar/useravatar.avif";
-import { Calendar, ArrowRight } from "lucide-react";
+import { Bookmark, Calendar, ArrowRight, Heart } from "lucide-react";
 
 export default function BlogCard({
     image,
@@ -9,6 +9,11 @@ export default function BlogCard({
     onClick,
     authorName = "Author",
     authorImage,
+    showActions = false,
+    isLiked = false,
+    isBookmarked = false,
+    onToggleLike,
+    onToggleBookmark,
 }) {
     return (
         <div 
@@ -25,6 +30,42 @@ export default function BlogCard({
                 />
                 {/* Gradient Overlay on Hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                {showActions && (
+                    <div className="absolute right-3 top-3 flex flex-col gap-2">
+                        <button
+                            type="button"
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                onToggleLike?.();
+                            }}
+                            className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-sm transition-all duration-300 ${
+                                isLiked
+                                    ? "border-red-200 bg-red-500 text-white"
+                                    : "border-white/70 bg-white/90 text-gray-700 hover:bg-white"
+                            }`}
+                            aria-label={isLiked ? "Unlike post" : "Like post"}
+                        >
+                            <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                onToggleBookmark?.();
+                            }}
+                            className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-sm transition-all duration-300 ${
+                                isBookmarked
+                                    ? "border-amber-200 bg-amber-500 text-white"
+                                    : "border-white/70 bg-white/90 text-gray-700 hover:bg-white"
+                            }`}
+                            aria-label={isBookmarked ? "Remove bookmark" : "Bookmark post"}
+                        >
+                            <Bookmark className={`h-4 w-4 ${isBookmarked ? "fill-current" : ""}`} />
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Content Section */}
