@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Navlinks from "./navlinks";
+import Navlinks from "./Navlinks";
 import { FaSearch } from "react-icons/fa";
 import { Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
