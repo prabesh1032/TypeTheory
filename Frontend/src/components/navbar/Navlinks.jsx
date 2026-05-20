@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import useStateContext from "../../context/useStateContext";
 import AuthService from "../../services/authService";
+import { categories } from "../../constants/categories";
 
 export default function Navlinks({ isMobile = false, onNavigate }) {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -19,13 +20,12 @@ export default function Navlinks({ isMobile = false, onNavigate }) {
     { name: "Contact", href: "/contact" },
   ];
 
-  const categories = [
-    "Technology",
-    "Travel",
-    "Lifestyle",
-    "Business",
-    "Food",
-  ];
+  const slugifyCategory = (value) =>
+    value
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function Navlinks({ isMobile = false, onNavigate }) {
 
   const dropdownClass = isMobile
     ? "mt-2 ml-4 w-[calc(100%-1rem)] rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-    : "absolute top-full left-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[200px] z-50 animate-fadeIn";
+    : "absolute top-full left-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[280px] z-50 animate-fadeIn";
 
   return (
     <ul className={listClass}>
@@ -109,11 +109,11 @@ export default function Navlinks({ isMobile = false, onNavigate }) {
 
                 {showDropdown && (
                   <div className={dropdownClass}>
-                    <div className="py-1">
+                    <div className="max-h-96 overflow-y-auto scroll-smooth py-1">
                       {categories.map((category) => (
                         <Link
                           key={category}
-                          to={`/category/${category.toLowerCase()}`}
+                          to={`/category/${slugifyCategory(category)}`}
                           onClick={() => {
                             setShowDropdown(false);
                             if (onNavigate) onNavigate();

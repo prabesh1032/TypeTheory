@@ -1,18 +1,12 @@
 import { useForm } from "react-hook-form";
+import { useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import BlogService from "../services/blogService";
 import { showErrorToast, showSuccessToast } from "../components/ShowToast";
 import HeroBanner from "../components/HeroBanner";
-
-const categories = [
-  "Design",
-  "Technology",
-  "Travel",
-  "Food",
-  "Lifestyle",
-  "Business",
-];
+import { categories } from "../constants/categories";
+import CategoryDropdown from "../components/CategoryDropdown";
 
 export default function CreateBlog() {
   const navigate = useNavigate();
@@ -22,17 +16,19 @@ export default function CreateBlog() {
   const {
     register,
     handleSubmit,
+    control,
     setValue,
     clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      category: "Design",
+      category: categories[0],
       title: "",
       description: "",
       image: null,
     },
   });
+  const category = useWatch({ control, name: "category" });
 
   const onSubmit = async (data) => {
     try {
@@ -96,20 +92,17 @@ export default function CreateBlog() {
             )}
             <div className="grid gap-6 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Category</label>
-                <select
-                  {...register("category", { required: "Category is required" })}
-                  className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                >
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-                {errors.category && (
-                  <p className="mt-1 text-xs text-red-500">{errors.category.message}</p>
-                )}
+                <CategoryDropdown
+                  label="Category"
+                  value={category}
+                  options={categories}
+                  onChange={(category) => {
+                    setValue("category", category, { shouldValidate: true, shouldDirty: true });
+                    clearErrors("category");
+                  }}
+                  error={errors.category?.message}
+                />
+                <input type="hidden" {...register("category", { required: "Category is required" })} />
               </div>
 
               <div>
