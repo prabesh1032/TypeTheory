@@ -4,6 +4,8 @@ import BlogCard from "../components/BlogCard";
 import BlogService from "../services/blogService";
 import LoadMore from "../components/LoadMore";
 import HeroBanner from "../components/HeroBanner";
+import EmptyState from "../components/EmptyState";
+import { Heart } from 'lucide-react';
 
 const BLOGS_PER_PAGE = 6;
 
@@ -136,12 +138,11 @@ export default function LikedBlogs() {
             <p className="mt-4 text-sm text-gray-500">Loading amazing content...</p>
           </div>
         ) : visibleBlogs.length === 0 ? (
-          <div className="text-center py-12 sm:py-20">
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
-              No liked articles yet
-            </h3>
-            <p className="text-gray-500">Like posts on the home page to see them here.</p>
-          </div>
+          <EmptyState
+            icon={Heart}
+            title="No liked articles yet"
+            description="Like posts on the home page to see them here."
+          />
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">

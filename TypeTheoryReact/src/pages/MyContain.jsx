@@ -4,6 +4,8 @@ import BlogCard from "../components/BlogCard";
 import BlogService from "../services/blogService";
 import LoadMore from "../components/LoadMore";
 import HeroBanner from "../components/HeroBanner";
+import EmptyState from "../components/EmptyState";
+import { Edit3 } from 'lucide-react';
 
 const BLOGS_PER_PAGE = 6;
 
@@ -99,7 +101,11 @@ export default function MyContain() {
             <p className="mt-4 text-sm text-gray-500">Loading amazing content...</p>
           </div>
         ) : blogs.length === 0 ? (
-          <p className="text-center text-sm text-gray-500">No blogs found.</p>
+          <EmptyState
+            icon={Edit3}
+            title="No blogs yet"
+            description="You haven't published any articles yet. Create your first post now."
+          />
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">

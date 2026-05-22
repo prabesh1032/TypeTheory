@@ -5,6 +5,8 @@ import BlogCard from "../../components/BlogCard";
 import BlogService from "../../services/blogService";
 import LoadMore from "../../components/LoadMore";
 import useStateContext from "../../context/useStateContext";
+import EmptyState from "../../components/EmptyState";
+import { FileText, Tag } from 'lucide-react';
 
 const BLOGS_PER_PAGE = 6;
 
@@ -192,15 +194,11 @@ export default function Home() {
 
                     {/* Empty State */}
                     {!isLoading && blogs.length === 0 && !error && (
-                        <div className="text-center py-12 sm:py-20">
-                            <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
-                                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">No articles yet</h3>
-                            <p className="text-gray-500">Check back soon for new content!</p>
-                        </div>
+                        <EmptyState
+                            icon={FileText}
+                            title="No articles yet"
+                            description="Check back soon for new content!"
+                        />
                     )}
 
                     {/* Blog Cards Grid */}
@@ -242,12 +240,11 @@ export default function Home() {
                     )}
 
                     {!isLoading && !error && selectedCategory && filteredBlogs.length === 0 && (
-                        <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center shadow-sm">
-                            <h3 className="text-lg font-semibold text-gray-900">No blogs found</h3>
-                            <p className="mt-2 text-sm text-gray-500">
-                                No posts are available for the {selectedCategory} category yet.
-                            </p>
-                        </div>
+                        <EmptyState
+                            icon={Tag}
+                            title="No blogs found"
+                            description={`No posts are available for the ${selectedCategory} category yet.`}
+                        />
                     )}
                 </div>
             </section>
