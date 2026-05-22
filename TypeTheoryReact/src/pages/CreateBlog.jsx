@@ -15,6 +15,10 @@ export default function CreateBlog() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [serverError, setServerError] = useState("");
 
+  const parseError = (error) => {
+    return error?.response?.data?.message || 'Server error';
+  };
+
   const {
     register,
     handleSubmit,
@@ -55,11 +59,7 @@ export default function CreateBlog() {
       showSuccessToast("Blog created successfully");
       navigate("/mycontains");
     } catch (error) {
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Failed to create blog";
-      setServerError(message);
+      const message = parseError(error);
       showErrorToast(message);
     }
   };
@@ -96,11 +96,6 @@ export default function CreateBlog() {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 px-6 py-6">
-            {serverError && (
-              <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                {serverError}
-              </div>
-            )}
             <div className="grid gap-6 md:grid-cols-2">
               <div>
                 <CategoryDropdown

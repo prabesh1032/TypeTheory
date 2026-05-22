@@ -44,12 +44,10 @@ export default function Login() {
 
   return (
     <>
-      <h3 className="text-gray-800 font-bold text-3xl mb-2">
-        Welcome back
-      </h3>
-      <p className="text-gray-400 text-sm mb-10">
-        Login to continue to TypeTheory.
-      </p>
+      <div className="hidden md:block">
+        <h3 className="text-gray-800 font-bold text-3xl mb-2">Welcome back</h3>
+        <p className="text-gray-400 text-sm mb-10">Login to continue to TypeTheory.</p>
+      </div>
 
       {/* Server Error */}
       {serverError && (

@@ -83,7 +83,9 @@ export default function Register() {
       onSubmit={handleSubmit(submitForm)}
       className="bg-white p-8 rounded-2xl w-full max-w-md"
     >
-      <h2 className="text-2xl font-bold text-center mb-6">Create Account</h2>
+      <div className="hidden md:block">
+        <h2 className="text-2xl font-bold text-center mb-6">Create Account</h2>
+      </div>
       {/* Name */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Name</label>
