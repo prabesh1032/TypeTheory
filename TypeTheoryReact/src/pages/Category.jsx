@@ -5,6 +5,8 @@ import BlogService from "../services/blogService";
 import LoadMore from "../components/LoadMore";
 import useStateContext from "../context/useStateContext";
 import HeroBanner from "../components/HeroBanner";
+import EmptyState from "../components/EmptyState";
+import { Tag } from 'lucide-react';
 
 const BLOGS_PER_PAGE = 6;
 
@@ -172,12 +174,12 @@ export default function Category() {
             <p className="mt-4 text-sm text-gray-500">Loading amazing content...</p>
           </div>
         ) : filteredBlogs.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900">No blogs found</h3>
-            <p className="mt-2 text-sm text-gray-500">
-              No posts are available for the {pageTitle} category yet.
-            </p>
-          </div>
+          <EmptyState
+            icon={Tag}
+            title="No blogs found"
+            description={`No posts are available for the ${pageTitle} category yet.`}
+            className="mx-auto"
+          />
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">

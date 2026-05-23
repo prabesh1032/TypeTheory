@@ -18,6 +18,10 @@ export default function EditBlog() {
   const [uploadedPreview, setUploadedPreview] = useState("");
   const [serverError, setServerError] = useState("");
 
+  const parseError = (error) => {
+    return error?.response?.data?.message || 'Server error';
+  };
+
   const existingPreview =
     typeof blog.image === "string" && blog.image
       ? blog.image.startsWith("http") || blog.image.startsWith("blob:") || blog.image.startsWith("data:")
@@ -81,9 +85,7 @@ export default function EditBlog() {
       showSuccessToast("Blog updated successfully");
       navigate("/mycontains");
     } catch (error) {
-      const message =
-        error?.response?.data?.message || error?.message || "Failed to update blog";
-      setServerError(message);
+      const message = parseError(error);
       showErrorToast(message);
     }
   };
@@ -119,11 +121,6 @@ export default function EditBlog() {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 px-6 py-6">
-            {serverError && (
-              <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                {serverError}
-              </div>
-            )}
 
             <div className="grid gap-6 md:grid-cols-2">
               <div>

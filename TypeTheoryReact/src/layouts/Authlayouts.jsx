@@ -1,15 +1,37 @@
 import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import logo from "../assets/logo/typetheory.png";
 
 export default function Authlayouts() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4">
 
-      <div className="flex w-full max-w-4xl min-h-140 rounded-2xl overflow-hidden shadow-xl">
+      <div className="flex flex-col md:flex-row w-full max-w-4xl min-h-140 rounded-2xl overflow-hidden shadow-xl">
 
         {/* LEFT: child content (form) */}
-        <div className="w-7/12 bg-white flex flex-col justify-center px-6 py-10 sm:px-10 md:px-14 md:py-14">
+        <div className="w-full md:w-7/12 bg-white flex flex-col justify-center px-6 py-10 sm:px-10 md:px-14 md:py-14">
+          {/* Mobile: show logo and welcome text inline, hidden on md+ */}
+          {(() => {
+            const location = useLocation();
+            const isRegister = location.pathname.includes('/register') || location.pathname.includes('/signup');
+            return (
+              <div className="flex items-center justify-center md:hidden mb-6 gap-4">
+                <Link to="/" className="inline-flex items-center">
+                  <div className="bg-black backdrop-blur-sm rounded-full border border-white/10 inline-flex p-1">
+                    <img
+                      src={logo}
+                      alt="TypeTheory Logo"
+                      className="h-14 w-auto object-contain hover:opacity-80 transition-opacity duration-300"
+                    />
+                  </div>
+                </Link>
+                <div className="text-center">
+                  <h3 className="text-gray-800 font-bold text-2xl leading-snug">{isRegister ? 'Create Account' : 'Welcome back'}</h3>
+                  <p className="text-gray-400 text-xs">{isRegister ? 'Create your account and start publishing.' : 'Login to continue to TypeTheory.'}</p>
+                </div>
+              </div>
+            );
+          })()}
           <Outlet />
         </div>
 
