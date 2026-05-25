@@ -79,11 +79,11 @@ const Hero = ({ oldestBlogs = [] }) => {
                 to={`/blog/${post.slug || post.id}`}
                 className="flex items-center gap-4 py-3.5 border-b border-[#d9d3c9] cursor-pointer group"
               >
-                <span className="font-serif text-2xl font-bold text-[#d9d3c9] leading-none min-w-7">
+                <span className="font-serif text-2xl font-bold text-black leading-none min-w-7">
                   {post.num}
                 </span>
                 <div>
-                  <p className="text-[10px] font-medium tracking-[0.14em] uppercase text-amber-700 mb-1">
+                  <p className="text-[10px] font-medium tracking-[0.14em] uppercase text-sky-700 mb-1">
                     {post.category}
                   </p>
                   <p className="text-sm font-medium text-gray-900 leading-snug group-hover:underline">
