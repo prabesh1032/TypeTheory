@@ -142,7 +142,7 @@ export default function Category() {
   };
 
   return (
-    <section className="bg-gray-50 min-h-screen">
+    <section className=" min-h-screen">
       <HeroBanner title={`${pageTitle} Blogs`} />
 
       <div className="max-w-7xl mx-auto px-4 py-12">

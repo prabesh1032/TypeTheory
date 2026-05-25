@@ -120,7 +120,7 @@ export default function LikedBlogs() {
   const canLoadMore = visibleCount < visibleBlogs.length;
 
   return (
-    <section className="bg-gray-50 min-h-screen">
+    <section className=" min-h-screen">
       <HeroBanner title="Liked Articles" />
 
       <div className="max-w-7xl mx-auto px-4 py-12">

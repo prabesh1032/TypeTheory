@@ -74,7 +74,7 @@ export default function MyContain() {
   const canLoadMore = visibleCount < blogs.length;
 
   return (
-    <section className="bg-gray-50 min-h-screen">
+    <section className=" min-h-screen">
       <HeroBanner title="My Articles" />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
