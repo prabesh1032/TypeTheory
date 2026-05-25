@@ -20,11 +20,6 @@ const getBlogImageUrl = (image) => {
   return `${import.meta.env.VITE_APP_API_BASE_URL}/storage/${image}`;
 };
 
-const estimateReadTime = (text = "") => {
-  const words = text.trim().split(/\s+/).length;
-  return Math.max(1, Math.ceil(words / 200));
-};
-
 export default function ViewBlog() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -34,7 +29,6 @@ export default function ViewBlog() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionError, setActionError] = useState("");
-  const [copied, setCopied] = useState(false);
   const [likedBlogs, setLikedBlogs] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("HOME_BLOG_LIKES") || "{}");
@@ -121,11 +115,7 @@ export default function ViewBlog() {
     }
   };
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  
 
   const toggleLike = () => {
     if (!token) {
@@ -192,8 +182,6 @@ export default function ViewBlog() {
     .map((l) => l.trim())
     .filter(Boolean);
 
-  const readTime = estimateReadTime(blog.description || "");
-
   /* ── Author initials ── */
   const initials = (blog.user?.name || "A")
     .split(" ")
@@ -212,38 +200,41 @@ export default function ViewBlog() {
       <article className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
         {/* Meta row */}
-        <div className="flex items-center gap-3 mb-5 flex-wrap">
-          <span className="text-xs font-medium tracking-widest uppercase bg-sky-50 text-sky-600 px-3 py-1 rounded-full">
-            {blog.category || "Blog"}
-          </span>
-          <span className="flex items-center gap-1.5 text-xs text-gray-400">
-            <Clock className="w-3.5 h-3.5" />
-            {readTime} min read
-          </span>
-        </div>
+<div className="mb-4">
+  <span className="inline-flex items-center rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-600">
+    {blog.category || "Blog"}
+  </span>
+</div>
 
-        {/* Title */}
-        <h1 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight tracking-tight text-gray-900 mb-6">
-          {blog.title}
-        </h1>
-        {isOwner && (
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => navigate("/mycontains/editblog", { state: { blog } })}
-              className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 cursor-pointer"
-            >
-              Edit Blog
-            </button>
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700 cursor-pointer"
-            >
-              Delete Blog
-            </button>
-          </div>
-        )}
+{/* Title + Action Buttons */}
+<div className="flex flex-col gap-4 mb-6 lg:flex-row lg:items-start lg:justify-between">
+  
+  {/* Title */}
+  <h1 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight tracking-tight text-gray-900 max-w-3xl">
+    {blog.title}
+  </h1>
+
+  {/* Owner Actions */}
+  {isOwner && (
+    <div className="flex items-center gap-3 shrink-0">
+      <button
+        type="button"
+        onClick={() => navigate("/mycontains/editblog", { state: { blog } })}
+        className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:bg-blue-700 hover:scale-105 cursor-pointer"
+      >
+        Edit Blog
+      </button>
+
+      <button
+        type="button"
+        onClick={handleDelete}
+        className="rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:bg-red-700 hover:scale-105 cursor-pointer"
+      >
+        Delete Blog
+      </button>
+    </div>
+  )}
+</div>
 
         {/* Author + share row */}
         <div className="flex items-center justify-between gap-4 py-4 border-t border-b border-gray-200 mb-8 flex-wrap">
@@ -255,7 +246,7 @@ export default function ViewBlog() {
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-semibold text-indigo-700 flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-semibold text-indigo-700 shrink-0">
                 {initials}
               </div>
             )}
@@ -267,43 +258,35 @@ export default function ViewBlog() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={toggleLike}
-              aria-label="Like"
-              className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all cursor-pointer bg-white ${
-                isLiked
-                  ? "border-rose-200 text-rose-600 bg-rose-50"
-                  : "border-gray-200 text-gray-400 hover:text-gray-700 hover:border-gray-400"
-              }`}
-            >
-              <Heart className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={toggleBookmark}
-              aria-label="Bookmark"
-              className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all cursor-pointer bg-white ${
-                isBookmarked
-                  ? "border-sky-200 text-sky-600 bg-sky-50"
-                  : "border-gray-200 text-gray-400 hover:text-gray-700 hover:border-gray-400"
-              }`}
-            >
-              <Bookmark className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={handleCopyLink}
-              aria-label="Copy link"
-              className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:border-gray-400 transition-all cursor-pointer bg-white"
-            >
-              <Link className="w-3.5 h-3.5" />
-            </button>
-            {copied && (
-              <span className="text-xs text-green-600 font-medium">Copied!</span>
-            )}
-          </div>
+          <div className="flex items-center gap-3">
+  
+  <button
+    type="button"
+    onClick={toggleLike}
+    aria-label="Like"
+    className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-sm transition-all duration-300 cursor-pointer ${
+      isLiked
+        ? "border-red-200 bg-red-500 text-white"
+        : "border-white/70 bg-white text-gray-700 hover:bg-gray-50"
+    }`}
+  >
+    <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
+  </button>
+
+  <button
+    type="button"
+    onClick={toggleBookmark}
+    aria-label="Bookmark"
+    className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-sm transition-all duration-300 cursor-pointer ${
+      isBookmarked
+        ? "border-amber-200 bg-amber-500 text-white"
+        : "border-white/70 bg-white text-gray-700 hover:bg-gray-50"
+    }`}
+  >
+    <Bookmark className={`h-4 w-4 ${isBookmarked ? "fill-current" : ""}`} />
+  </button>
+
+</div>
         </div>
 
         {/* Action error */}
@@ -318,7 +301,7 @@ export default function ViewBlog() {
           <img
             src={imageUrl}
             alt={blog.title}
-            className="w-full h-auto max-h-[32rem] object-contain bg-gray-50"
+            className="w-full h-auto max-h-128 object-contain bg-gray-50"
           />
         </div>
 
@@ -341,25 +324,6 @@ export default function ViewBlog() {
             <p className="text-gray-400 italic">No description available.</p>
           )}
         </div>
-
-        {/* Footer tags */}
-        {blog.category && (
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <p className="text-xs uppercase tracking-widest text-gray-400 mb-3">
-              Tagged in
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {[blog.category, "Writing", "Type Theory"].map((tag) => (
-                <span
-                  key={tag}
-                  className="text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-500 bg-white"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
       </article>
     </div>
   );
