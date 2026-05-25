@@ -26,18 +26,19 @@ const Hero = ({ oldestBlogs = [] }) => {
 
         {/* Left — Content */}
         <div>
-          {/* Label */}
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-amber-700 block" />
-            <span className="text-[11px] font-medium tracking-[0.18em] uppercase text-amber-700">
+          {/* Label + Title */}
+          <div className="space-y-3 mb-4">
+            <span className="inline-block text-xs font-semibold tracking-[0.2em] text-sky-600 uppercase">
               Featured Story
             </span>
+            <h1
+              className="text-4xl font-semibold leading-tight text-gray-900"
+              style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
+            >
+              What Your Music Preference Says About You and Your Personality
+            </h1>
+            <div className="w-12 h-0.5 bg-sky-500 rounded-full" />
           </div>
-
-          {/* Title */}
-          <h1 className="font-serif text-4xl font-bold leading-tight text-gray-900 mb-4">
-            What Your Music Preference Says About You and Your Personality
-          </h1>
 
           {/* Excerpt */}
           <p className="text-sm text-gray-500 leading-relaxed mb-6">
