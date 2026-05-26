@@ -8,6 +8,18 @@ export const ContextProvider = ({ children }) => {
     localStorage.getItem("ACCESS_TOKEN") || null
   );
 
+  const resolveProfilePic = (value) => {
+    if (!value) return value;
+    if (
+      value.startsWith("http") ||
+      value.startsWith("blob:") ||
+      value.startsWith("data:")
+    ) {
+      return value;
+    }
+    return `${import.meta.env.VITE_APP_API_BASE_URL}/storage/${value}`;
+  };
+
   const setToken = (token) => {
     if (token) {
       _setToken(token);
@@ -29,11 +41,13 @@ export const ContextProvider = ({ children }) => {
         const currentUser = me.user || {};
 
         if (me.profile) {
-          currentUser.phone = me.profile.phone ?? currentUser.phone;
-          currentUser.bio = me.profile.bio ?? currentUser.bio;
-          currentUser.profile_picture = me.profile.profile_pic
-            ? `${import.meta.env.VITE_APP_API_BASE_URL}/storage/${me.profile.profile_pic}`
-            : currentUser.profile_picture;
+          const profile = { ...me.profile };
+          profile.profile_pic = resolveProfilePic(profile.profile_pic);
+
+          currentUser.profile = profile;
+          currentUser.phone = profile.phone ?? currentUser.phone;
+          currentUser.bio = profile.bio ?? currentUser.bio;
+          currentUser.profile_picture = profile.profile_pic ?? currentUser.profile_picture;
         }
 
         setUser(currentUser);

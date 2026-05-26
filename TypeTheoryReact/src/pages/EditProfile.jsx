@@ -13,9 +13,21 @@ export default function EditProfile() {
   const { user, setUser } = useStateContext();
   const [serverError, setServerError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const resolveProfilePic = (value) => {
+    if (!value) return value;
+    if (
+      value.startsWith("http") ||
+      value.startsWith("blob:") ||
+      value.startsWith("data:")
+    ) {
+      return value;
+    }
+    return `${import.meta.env.VITE_APP_API_BASE_URL}/storage/${value}`;
+  };
+
   const [preview, setPreview] = useState(
-  user?.profile?.profile_pic || defaultAvatar
-);
+    user?.profile?.profile_pic || user?.profile_picture || defaultAvatar
+  );
 
   const {
     register,
@@ -63,12 +75,14 @@ export default function EditProfile() {
         const me = await AuthService.getUserProfile();
         const newUser = me.user || {};
         if (me.profile) {
+          const profile = { ...me.profile };
+          profile.profile_pic = resolveProfilePic(profile.profile_pic);
+
           // map profile fields to top-level user keys used by the UI
-          newUser.phone = me.profile.phone ?? newUser.phone;
-          newUser.bio = me.profile.bio ?? newUser.bio;
-          newUser.profile_picture = me.profile.profile_pic
-            ? `${import.meta.env.VITE_APP_API_BASE_URL}/storage/${me.profile.profile_pic}`
-            : newUser.profile_picture;
+          newUser.profile = profile;
+          newUser.phone = profile.phone ?? newUser.phone;
+          newUser.bio = profile.bio ?? newUser.bio;
+          newUser.profile_picture = profile.profile_pic ?? newUser.profile_picture;
         }
         setUser(newUser);
       } catch {
