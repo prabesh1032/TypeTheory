@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import blog1 from "../../assets/blog1.jpg";
+import blog1 from "../../assets/blog1.png";
 import autherimg from "../../assets/useravatar/prabesh2.jpg";
 
 const Hero = ({ oldestBlogs = [] }) => {
@@ -64,7 +64,7 @@ const Hero = ({ oldestBlogs = [] }) => {
             />
             <div>
               <p className="text-sm font-medium text-gray-900">Prabesh Acharya</p>
-              <p className="text-xs text-gray-500">May 02, 2026 · 6 min read</p>
+              <p className="text-xs text-gray-500">May 29, 2026 · 6 min read</p>
             </div>
           </div>
 
