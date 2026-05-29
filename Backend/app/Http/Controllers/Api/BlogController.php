@@ -10,11 +10,23 @@ use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $blogs = Blog::with('user.profile')
-            ->latest()
-            ->get();
+        $limit = (int) $request->query('limit', 0);
+        $offset = (int) $request->query('offset', 0);
+        $offset = $offset < 0 ? 0 : $offset;
+
+        $query = Blog::with('user.profile')->latest();
+
+        if ($offset > 0) {
+            $query->skip($offset);
+        }
+
+        if ($limit > 0) {
+            $query->take($limit);
+        }
+
+        $blogs = $query->get();
 
         return response()->json([
             'blogs' => $blogs
@@ -24,6 +36,9 @@ class BlogController extends Controller
     public function search(Request $request)
     {
         $query = trim($request->query('q', ''));
+        $limit = (int) $request->query('limit', 0);
+        $offset = (int) $request->query('offset', 0);
+        $offset = $offset < 0 ? 0 : $offset;
 
         if ($query === '') {
             return response()->json([
@@ -31,14 +46,23 @@ class BlogController extends Controller
             ]);
         }
 
-        $blogs = Blog::with('user.profile')
+        $searchQuery = Blog::with('user.profile')
             ->where(function ($q) use ($query) {
                 $q->where('title', 'like', "%{$query}%")
                     ->orWhere('category', 'like', "%{$query}%")
                     ->orWhere('description', 'like', "%{$query}%");
             })
-            ->latest()
-            ->get();
+            ->latest();
+
+        if ($offset > 0) {
+            $searchQuery->skip($offset);
+        }
+
+        if ($limit > 0) {
+            $searchQuery->take($limit);
+        }
+
+        $blogs = $searchQuery->get();
 
         return response()->json([
             'blogs' => $blogs
@@ -72,10 +96,23 @@ class BlogController extends Controller
 
     public function myBlogs(Request $request)
     {
-        $blogs = Blog::with('user.profile')
+        $limit = (int) $request->query('limit', 0);
+        $offset = (int) $request->query('offset', 0);
+        $offset = $offset < 0 ? 0 : $offset;
+
+        $query = Blog::with('user.profile')
             ->where('user_id', $request->user()->id)
-            ->latest()
-            ->get();
+            ->latest();
+
+        if ($offset > 0) {
+            $query->skip($offset);
+        }
+
+        if ($limit > 0) {
+            $query->take($limit);
+        }
+
+        $blogs = $query->get();
 
         return response()->json([
             'blogs' => $blogs
